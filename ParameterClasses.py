@@ -4,6 +4,13 @@ import InputData as Data
 from InputData import HealthStates
 import SimPy.Markov as Markov
 
+class HealthStates(Enum):
+    """ health states of patients """
+    WELL = 0
+    COVID = 1
+    POST_COVID = 2
+    COVID_DEATH = 3
+    NATUAL_DEATH = 4
 
 class Therapies(Enum):
     """ mono vs. combination therapy """
@@ -20,23 +27,23 @@ class Parameters:
         # initial health state
         self.initialHealthState = HealthStates.WELL
 
-        # annual treatment cost
-        if self.therapy == Therapies.WITHOUT:
-            self.annualTreatmentCost = 0
-        else:
-            self.annualTreatmentCost = Data.VAX_COST
 
         # transition probability matrix of the selected therapy
         self.transRateMatrix = []
 
-        if self.therapy == Therapies.WITHOUT:
+
+        if therapy == Therapies.WITHOUT:
             # calculate transition rate matrix for the mono therapy
             self.transRateMatrix = Data.get_trans_rate_matrix(with_treatment=False)
-
-        elif self.therapy == Therapies.WITH:
+        else:
             # calculate transition probability matrix for the combination therapy
             self.transRateMatrix = Data.get_trans_rate_matrix(with_treatment=True)
 
+        # annual treatment cost
+        if self.therapy == Therapies.WITHOUT:
+            self.annualTreatmentCost = 0
+        elif self.therapy == Therapies.WITH:
+            self.annualTreatmentCost = Data.VAX_COST
 
         # annual state costs and utilities
         self.annualStateCosts = Data.ANNUAL_STATE_COST

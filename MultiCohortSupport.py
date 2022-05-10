@@ -48,7 +48,7 @@ def print_outcomes(multi_cohort_outcomes, therapy_name):
     print("")
 
 
-def plot_survival_curves_and_histograms(multi_cohort_outcomes_mono, multi_cohort_outcomes_combo):
+def plot_survival_curves_and_histograms(multi_cohort_outcomes_without, multi_cohort_outcomes_with):
     """ plot the survival curves and the histograms of survival times
     :param multi_cohort_outcomes_mono: outcomes of a multi-cohort simulated under mono therapy
     :param multi_cohort_outcomes_combo: outcomes of a multi-cohort simulated under combination therapy
@@ -56,8 +56,8 @@ def plot_survival_curves_and_histograms(multi_cohort_outcomes_mono, multi_cohort
 
     # get survival curves of both treatments
     sets_of_survival_curves = [
-        multi_cohort_outcomes_mono.survivalCurves,
-        multi_cohort_outcomes_combo.survivalCurves
+        multi_cohort_outcomes_without.survivalCurves,
+        multi_cohort_outcomes_with.survivalCurves
     ]
 
     # graph survival curve
@@ -66,15 +66,15 @@ def plot_survival_curves_and_histograms(multi_cohort_outcomes_mono, multi_cohort
         title='Survival Curves',
         x_label='Simulation Time Step (year)',
         y_label='Number of Patients Alive',
-        legends=['NON VAC Therapy', 'VAX Therapy'],
+        legends=['Without Vaccine', 'With Vaccine'],
         transparency=0.4,
         color_codes=['green', 'blue']
     )
 
     # histograms of survival times
     set_of_survival_times = [
-        multi_cohort_outcomes_mono.meanSurvivalTimes,
-        multi_cohort_outcomes_combo.meanSurvivalTimes
+        multi_cohort_outcomes_without.meanSurvivalTimes,
+        multi_cohort_outcomes_with.meanSurvivalTimes
     ]
 
     # graph histograms
@@ -85,13 +85,13 @@ def plot_survival_curves_and_histograms(multi_cohort_outcomes_mono, multi_cohort
         y_label='Counts',
         bin_width=0.25,
         x_range=[5.25, 17.75],
-        legends=['NON VAX Therapy', 'VAX Therapy'],
+        legends=['Without Vaccine', 'With Vaccine'],
         color_codes=['green', 'blue'],
         transparency=0.5
     )
 
 
-def print_comparative_outcomes(multi_cohort_outcomes_mono, multi_cohort_outcomes_combo):
+def print_comparative_outcomes(multi_cohort_outcomes_without, multi_cohort_outcomes_with):
     """ prints average increase in survival time, discounted cost, and discounted utility
     under combination therapy compared to mono therapy
     :param multi_cohort_outcomes_mono: outcomes of a multi-cohort simulated under mono therapy
@@ -101,8 +101,8 @@ def print_comparative_outcomes(multi_cohort_outcomes_mono, multi_cohort_outcomes
     # increase in mean survival time under combination therapy with respect to mono therapy
     increase_mean_survival_time = Stat.DifferenceStatPaired(
         name='Increase in mean survival time',
-        x=multi_cohort_outcomes_combo.meanSurvivalTimes,
-        y_ref=multi_cohort_outcomes_mono.meanSurvivalTimes)
+        x=multi_cohort_outcomes_with.meanSurvivalTimes,
+        y_ref=multi_cohort_outcomes_without.meanSurvivalTimes)
 
     # estimate and PI
     estimate_PI = increase_mean_survival_time.get_formatted_mean_and_interval(interval_type='p',
@@ -112,11 +112,11 @@ def print_comparative_outcomes(multi_cohort_outcomes_mono, multi_cohort_outcomes
           .format(1 - D.ALPHA, prec=0),
           estimate_PI)
 
-    # increase in mean discounted cost under combination therapy with respect to mono therapy
+    # increase in mean discounted cost under combination therapy with respect to non vax
     increase_mean_discounted_cost = Stat.DifferenceStatPaired(
         name='Increase in mean discounted cost',
-        x=multi_cohort_outcomes_combo.meanCosts,
-        y_ref=multi_cohort_outcomes_mono.meanCosts)
+        x=multi_cohort_outcomes_with.meanCosts,
+        y_ref=multi_cohort_outcomes_without.meanCosts)
 
     # estimate and PI
     estimate_PI = increase_mean_discounted_cost.get_formatted_mean_and_interval(interval_type='p',
@@ -130,8 +130,8 @@ def print_comparative_outcomes(multi_cohort_outcomes_mono, multi_cohort_outcomes
     # increase in mean discounted QALY under combination therapy with respect to mono therapy
     increase_mean_discounted_qaly = Stat.DifferenceStatPaired(
         name='Increase in mean discounted QALY',
-        x=multi_cohort_outcomes_combo.meanQALYs,
-        y_ref=multi_cohort_outcomes_mono.meanQALYs)
+        x=multi_cohort_outcomes_with.meanQALYs,
+        y_ref=multi_cohort_outcomes_without.meanQALYs)
 
     # estimate and PI
     estimate_PI = increase_mean_discounted_qaly.get_formatted_mean_and_interval(interval_type='p',
@@ -142,29 +142,29 @@ def print_comparative_outcomes(multi_cohort_outcomes_mono, multi_cohort_outcomes
           estimate_PI)
 
 
-def report_CEA_CBA(multi_cohort_outcomes_mono, multi_cohort_outcomes_combo):
+def report_CEA_CBA(multi_cohort_outcomes_without, multi_cohort_outcomes_with):
     """ performs cost-effectiveness and cost-benefit analyses
     :param multi_cohort_outcomes_mono: outcomes of a multi-cohort simulated under mono therapy
     :param multi_cohort_outcomes_combo: outcomes of a multi-cohort simulated under combination therapy
     """
 
     # define two strategies
-    mono_therapy_strategy = Econ.Strategy(
-        name='NON VAX Therapy',
-        cost_obs=multi_cohort_outcomes_mono.meanCosts,
-        effect_obs=multi_cohort_outcomes_mono.meanQALYs,
+    without_therapy_strategy = Econ.Strategy(
+        name='Without Vaccine',
+        cost_obs=multi_cohort_outcomes_without.meanCosts,
+        effect_obs=multi_cohort_outcomes_without.meanQALYs,
         color='green'
     )
-    combo_therapy_strategy = Econ.Strategy(
-        name='VAX Therapy',
-        cost_obs=multi_cohort_outcomes_combo.meanCosts,
-        effect_obs=multi_cohort_outcomes_combo.meanQALYs,
+    with_therapy_strategy = Econ.Strategy(
+        name='With Vaccine',
+        cost_obs=multi_cohort_outcomes_with.meanCosts,
+        effect_obs=multi_cohort_outcomes_with.meanQALYs,
         color='blue'
     )
 
     # do CEA
     CEA = Econ.CEA(
-        strategies=[mono_therapy_strategy, combo_therapy_strategy],
+        strategies=[without_therapy_strategy, with_therapy_strategy],
         if_paired=True
     )
 
@@ -188,9 +188,11 @@ def report_CEA_CBA(multi_cohort_outcomes_mono, multi_cohort_outcomes_combo):
 
     # CBA
     NBA = Econ.CBA(
-        strategies=[mono_therapy_strategy, combo_therapy_strategy],
+        strategies=[without_therapy_strategy, with_therapy_strategy],
         wtp_range=(0, 50000),
         if_paired=True
+        # wtp_range=[0, 1000],
+        # if_paired=False
     )
     # show the net monetary benefit figure
     NBA.plot_incremental_nmbs(

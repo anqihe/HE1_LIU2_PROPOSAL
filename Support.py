@@ -66,7 +66,7 @@ def plot_survival_curves_and_histograms(sim_outcomes_without, sim_outcomes_with)
         title='Survival curve',
         x_label='Simulation time step (year)',
         y_label='Number of alive patients',
-        legends=['Mono Therapy', 'Combination Therapy'],
+        legends=['Without Vaccine', 'With Vaccine'],
         color_codes=['green', 'blue']
     )
 
@@ -83,7 +83,7 @@ def plot_survival_curves_and_histograms(sim_outcomes_without, sim_outcomes_with)
         x_label='Survival time (year)',
         y_label='Counts',
         bin_width=1,
-        legends=['NON VAX Therapy', 'VAX Therapy'],
+        legends=['Without Vaccine', 'With Vaccine'],
         color_codes=['green', 'blue'],
         transparency=0.6
     )

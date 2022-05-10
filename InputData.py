@@ -13,7 +13,7 @@ ANNUAL_PROB_COVID_MORT = 111.4 / 100000
 ANNUAL_PROB_FIRST_COVID = 0.246
 PROB_SURVIVE_FIRST_COVID = (24600-111.4)/24600
 PROB_SURVIVE_RECURRENT_COVID = 0.95
-PROB_RECURRENT_COVID = 0.04
+PROB_RECURRENT_COVID = 0.148
 COVID_DURATION = 2/52  # 2 week
 
 VAX_COVID_REDUCTION = 0.85
@@ -102,10 +102,10 @@ def get_trans_rate_matrix(with_treatment):
     return rate_matrix
 
 
-# print('Transition rate matrix with no treatment:')
-# print(get_trans_rate_matrix(with_treatment=False))
-# print('Transition rate matrix with treatment:')
-# print(get_trans_rate_matrix(with_treatment=True))
+print('Transition rate matrix without vaccine:')
+print(get_trans_rate_matrix(with_treatment=False))
+print('Transition rate matrix with vaccine:')
+print(get_trans_rate_matrix(with_treatment=True))
 
 
 

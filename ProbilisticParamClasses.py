@@ -30,7 +30,7 @@ class ParameterGenerator:
         self.lnRelativeRiskRVG = None  # normal distribution for the natural log of the treatment relative risk
         self.annualStateCostRVG = []  # list of gamma distributions for the annual cost of states
         self.annualStateUtilityRVG = []  # list of beta distributions for the annual utility of states
-        self.annualTreatmentCostRVG = None   # gamma distribution for treatment cost
+        # self.annualTreatmentCostRVG = None   # gamma distribution for treatment cost
 
         # # create Dirichlet distributions for transition probabilities
         # j = 0
@@ -41,7 +41,7 @@ class ParameterGenerator:
         #         a=probs, if_ignore_0s=True))
         #     j += 1
         #
-        # # treatment relative risk
+        # treatment relative risk
         # rr_ci = [0.365, 0.71]   # confidence interval of the treatment relative risk
         #
         # # find the mean and st_dev of the normal distribution assumed for ln(RR)
@@ -56,11 +56,12 @@ class ParameterGenerator:
 
         # create gamma distributions for annual state cost
         for cost in Data.ANNUAL_STATE_COST:
-
             # if cost is zero, add a constant 0, otherwise add a gamma distribution
             if cost == 0:
                 self.annualStateCostRVG.append(RVGs.Constant(value=0))
+
             else:
+                self.annualStateCostRVG.append(RVGs.Constant(value=1))
                 # find shape and scale of the assumed gamma distribution
                 # no data available to estimate the standard deviation, so we assumed st_dev=cost / 5
                 fit_output = RVGs.Gamma.fit_mm(mean=cost, st_dev=cost / 5)
@@ -70,22 +71,24 @@ class ParameterGenerator:
                                loc=0,
                                scale=fit_output["scale"]))
 
-        # create a gamma distribution for annual treatment cost
-        if self.therapy == Therapies.WITHOUT:
-            annual_cost = 0
-        else:
-            annual_cost = Data.VAX_COST
-
-        fit_output = RVGs.Gamma.fit_mm(mean=annual_cost, st_dev=annual_cost/5)
-        self.annualTreatmentCostRVG = RVGs.Gamma(a=fit_output["a"],
-                                                 loc=0,
-                                                 scale=fit_output["scale"])
+        # # create a gamma distribution for annual treatment cost
+        # if self.therapy == Therapies.WITHOUT:
+        #     annual_cost = 0
+        # else:
+        #     annual_cost = Data.VAX_COST
+        #
+        # fit_output = RVGs.Gamma.fit_mm(mean=annual_cost, st_dev=annual_cost/5)
+        # self.annualTreatmentCostRVG = RVGs.Gamma(a=fit_output["a"],
+        #                                          loc=0,
+        #                                          scale=fit_output["scale"])
 
         # create beta distributions for annual state utility
         for utility in Data.ANNUAL_STATE_UTILITY:
             # if utility is zero, add a constant 0, otherwise add a beta distribution
             if utility == 0:
-                self.annualStateCostRVG.append(RVGs.Constant(value=0))
+                self.annualStateUtilityRVG.append(RVGs.Constant(value=0))
+            elif utility == 1:
+                self.annualStateUtilityRVG.append(RVGs.Constant(value=1))
             else:
                 # find alpha and beta of the assumed beta distribution
                 # no data available to estimate the standard deviation, so we assumed st_dev=cost / 4
@@ -131,8 +134,8 @@ class ParameterGenerator:
         for dist in self.annualStateCostRVG:
             param.annualStateCosts.append(dist.sample(rng))
 
-        # sample from the gamma distribution that is assumed for the treatment cost
-        param.annualTreatmentCost = self.annualTreatmentCostRVG.sample(rng)
+        # # sample from the gamma distribution that is assumed for the treatment cost
+        # param.annualTreatmentCost = self.annualTreatmentCostRVG.sample(rng)
 
         # sample from beta distributions that are assumed for annual state utilities
         for dist in self.annualStateUtilityRVG:

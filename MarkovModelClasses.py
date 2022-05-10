@@ -32,6 +32,7 @@ class Patient:
             # find time until next event (dt), and next state
             # (note that the gillespie algorithm returns None for dt if the process
             # is in an absorbing state)
+
             dt, new_state_index = gillespie.get_next_state(
                 current_state_index=self.stateMonitor.currentState.value,
                 rng=rng)
@@ -82,8 +83,8 @@ class PatientStateMonitor:
 
         # update cost and utility
         self.costUtilityMonitor.update(time=time,
-                                       current_state=self.currentState
-                                       )
+                                       current_state=self.currentState)
+                                       #next_state=new_state)
 
         # update current health state
         self.currentState = new_state
@@ -119,8 +120,9 @@ class PatientCostUtilityMonitor:
                                                         discount_rate=self.params.discountRate,
                                                         discount_period=(self.tLastRecorded, time))
 
-        #if next_state == HealthStates.COVID:
-         #   discounted_cost += Econ.pv_single_payment(payment=)
+        # if next_state == HealthStates.COVID:
+        #    discounted_cost += Econ.pv_single_payment(payment=5000, discount_rate=0.03, discount_period=time,
+        #                                             discount_continuously=True)
 
         # update total discounted cost and utility
         self.totalDiscountedCost += discounted_cost

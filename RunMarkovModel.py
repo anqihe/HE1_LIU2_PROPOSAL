@@ -19,17 +19,28 @@ myCohort.simulate(sim_length=D.SIMULATION_LENGTH)
 # plot the sample path (survival curve)
 Path.plot_sample_path(
     sample_path=myCohort.cohortOutcomes.nLivingPatients,
-    title='Survival Curve',
+    title='Survival Curve (Model without vaccine)',
     x_label='Time-Step (Year)',
     y_label='Number Survived')
 
 # plot the histogram of survival times
 Hist.plot_histogram(
     data=myCohort.cohortOutcomes.survivalTimes,
-    title='Histogram of Patient Survival Time',
+    title='Histogram of Patient Survival Time\n(Model without vaccine)',
     x_label='Survival Time (Year)',
     y_label='Count',
     bin_width=1)
+
+# histogram of number of cvd
+Hist.plot_histogram(
+    data=myCohort.cohortOutcomes.nTotalCOVID,
+    title='Number of COVID (Without vaccine)',
+    x_label='Number of COVID',
+    y_label='Count',
+    bin_width=1,
+    x_range=[0, 7]
+)
+
 
 # print the outcomes of this simulated cohort
 Support.print_outcomes(sim_outcomes=myCohort.cohortOutcomes,
