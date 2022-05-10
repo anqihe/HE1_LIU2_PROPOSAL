@@ -1,7 +1,7 @@
 from enum import Enum
 import numpy as np
-import test as Data
-from test import HealthStates
+import InputData as Data
+from InputData import HealthStates
 import SimPy.Markov as Markov
 
 

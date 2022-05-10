@@ -1,4 +1,4 @@
-import test as D
+import InputData as D
 import ParameterClasses as P
 import MarkovModelClasses as Cls
 import Support as Support
@@ -60,7 +60,7 @@ Hist.plot_histogram(
     title='Histogram of Patient Survival Time\n(Model with vaccine)',
     x_label='Survival Time (Year)',
     y_label='Count',
-    bin_width=5
+    bin_width=1
 )
 
 # histogram of number of cvd

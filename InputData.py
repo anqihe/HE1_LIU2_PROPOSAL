@@ -4,14 +4,14 @@ import numpy as np
 
 # simulation settings
 POP_SIZE = 10000         # cohort population size
-SIMULATION_LENGTH = 20   # length of simulation (years)
+SIMULATION_LENGTH = 100   # length of simulation (years)
 ALPHA = 0.05        # significance level for calculating confidence intervals
 DISCOUNT = 0.03     # annual discount rate
 
 ANNUAL_PROB_ALL_CAUSE_MORT = 0.0104
 ANNUAL_PROB_COVID_MORT = 111.4 / 100000
 ANNUAL_PROB_FIRST_COVID = 0.246
-PROB_SURVIVE_FIRST_COVID = (100000-111.4)/100000
+PROB_SURVIVE_FIRST_COVID = (24600-111.4)/24600
 PROB_SURVIVE_RECURRENT_COVID = 0.95
 PROB_RECURRENT_COVID = 0.04
 COVID_DURATION = 2/52  # 2 week
@@ -62,8 +62,8 @@ def get_trans_rate_matrix(with_treatment):
     """
 
     # Part 1: find the annual probability of non-stroke death
-    annual_prob_non_stroke_mort = (ANNUAL_PROB_ALL_CAUSE_MORT - ANNUAL_PROB_COVID_MORT)
-    lambda0 = -np.log(1-annual_prob_non_stroke_mort)
+    annual_prob_non_covid_mort = (ANNUAL_PROB_ALL_CAUSE_MORT - ANNUAL_PROB_COVID_MORT)
+    lambda0 = -np.log(1-annual_prob_non_covid_mort)
 
     # Part 2: lambda 1 + lambda 2
     lambda1_plus2 = -np.log(1 - ANNUAL_PROB_FIRST_COVID)
@@ -73,7 +73,7 @@ def get_trans_rate_matrix(with_treatment):
     lambda2 = lambda1_plus2*(1-PROB_SURVIVE_FIRST_COVID)
 
     # Part 4
-    lambda3_plus4 = -1/5 * np.log(1-PROB_RECURRENT_COVID)
+    lambda3_plus4 = -np.log(1-PROB_RECURRENT_COVID)
 
     # Part 5
     lambda3 = lambda3_plus4*PROB_SURVIVE_RECURRENT_COVID

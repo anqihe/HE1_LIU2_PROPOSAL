@@ -1,4 +1,4 @@
-import test as D
+import InputData as D
 import SimPy.EconEval as Econ
 import SimPy.Plots.Histogram as Hist
 import SimPy.Plots.SamplePaths as Path
