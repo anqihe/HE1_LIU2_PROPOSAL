@@ -6,8 +6,7 @@ import SimPy.Plots.Histogram as Hist
 import SimPy.Plots.SamplePaths as Path
 
 
-myCohort = Cls.Cohort(id=1,
-                                  pop_size=D.POP_SIZE,
+myCohort = Cls.Cohort(id=1, pop_size=D.POP_SIZE,
                                   parameters=P.Parameters(therapy=P.Therapies.WITHOUT))
 
 # simulate
@@ -42,7 +41,7 @@ Hist.plot_histogram(
 
 # print the outcomes of this simulated cohort
 Support.print_outcomes(sim_outcomes=myCohort.cohortOutcomes,
-                       therapy_name=therapy)
+                       therapy_name=P.Therapies.WITHOUT)
 
 print('Without Vaccine:')
 print('     Mean survival time for the model (years):',
@@ -56,8 +55,7 @@ print('Average discounted cost of patients who start in the state “Well” wit
 # -----------------------------
 # Markov model with vaccine
 # -----------------------------
-myCohortWith = Cls.Cohort(id=1,
-                                  pop_size=D.POP_SIZE,
+myCohortWith = Cls.Cohort(id=1, pop_size=D.POP_SIZE,
                                   parameters=P.Parameters(therapy=P.Therapies.WITH))
 
 # simulate
@@ -89,6 +87,12 @@ Hist.plot_histogram(
     bin_width=1,
     x_range=[0, 7]
 )
+
+
+# print the outcomes of this simulated cohort
+Support.print_outcomes(sim_outcomes=myCohort.cohortOutcomes,
+                       therapy_name=P.Therapies.WITH)
+
 
 print('With Vaccine:')
 print('     Mean survival time for the model (years):',
