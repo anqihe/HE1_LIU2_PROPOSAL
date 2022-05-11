@@ -3,7 +3,7 @@ from enum import Enum
 import numpy as np
 
 # simulation settings
-POP_SIZE = 10000         # cohort population size
+POP_SIZE = 10000        # cohort population size 10000
 SIMULATION_LENGTH = 100   # length of simulation (years)
 ALPHA = 0.05        # significance level for calculating confidence intervals
 DISCOUNT = 0.03     # annual discount rate

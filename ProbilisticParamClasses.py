@@ -30,29 +30,29 @@ class ParameterGenerator:
         self.lnRelativeRiskRVG = None  # normal distribution for the natural log of the treatment relative risk
         self.annualStateCostRVG = []  # list of gamma distributions for the annual cost of states
         self.annualStateUtilityRVG = []  # list of beta distributions for the annual utility of states
-        # self.annualTreatmentCostRVG = None   # gamma distribution for treatment cost
+        self.annualTreatmentCostRVG = None   # gamma distribution for treatment cost
 
-        # # create Dirichlet distributions for transition probabilities
-        # j = 0
-        # for probs in Data.TRANS_MATRIX:
-        #     # note:  for a Dirichlet distribution all values of the argument 'a' should be non-zero.
-        #     # setting if_ignore_0s to True allows the Dirichlet distribution to take 'a' with zero values.
-        #     self.probMatrixRVG.append(RVGs.Dirichlet(
-        #         a=probs, if_ignore_0s=True))
-        #     j += 1
-        #
+        # create Dirichlet distributions for transition probabilities
+        j = 0
+        for probs in Data.rate_matrix:
+            # note:  for a Dirichlet distribution all values of the argument 'a' should be non-zero.
+            # setting if_ignore_0s to True allows the Dirichlet distribution to take 'a' with zero values.
+            self.probMatrixRVG.append(RVGs.Dirichlet(
+                a=probs, if_ignore_0s=True))
+            j += 1
+
         # treatment relative risk
-        # rr_ci = [0.365, 0.71]   # confidence interval of the treatment relative risk
-        #
-        # # find the mean and st_dev of the normal distribution assumed for ln(RR)
-        # # sample mean ln(RR)
-        # mean_ln_rr = math.log(Data.TREATMENT_RR)
-        # # sample standard deviation of ln(RR)
-        # std_ln_rr = \
-        #     (math.log(rr_ci[1]) - math.log(rr_ci[0])) / (2 * stat.norm.ppf(1 - 0.05 / 2))
-        # # create a normal distribution for ln(RR)
-        # self.lnRelativeRiskRVG = RVGs.Normal(loc=mean_ln_rr,
-        #                                      scale=std_ln_rr)
+        rr_ci = [0.365, 0.71]   # confidence interval of the treatment relative risk
+
+        # find the mean and st_dev of the normal distribution assumed for ln(RR)
+        # sample mean ln(RR)
+        mean_ln_rr = math.log(Data.TREATMENT_RR)
+        # sample standard deviation of ln(RR)
+        std_ln_rr = \
+            (math.log(rr_ci[1]) - math.log(rr_ci[0])) / (2 * stat.norm.ppf(1 - 0.05 / 2))
+        # create a normal distribution for ln(RR)
+        self.lnRelativeRiskRVG = RVGs.Normal(loc=mean_ln_rr,
+                                             scale=std_ln_rr)
 
         # create gamma distributions for annual state cost
         for cost in Data.ANNUAL_STATE_COST:
@@ -92,7 +92,7 @@ class ParameterGenerator:
             else:
                 # find alpha and beta of the assumed beta distribution
                 # no data available to estimate the standard deviation, so we assumed st_dev=cost / 4
-                fit_output = RVGs.Beta.fit_mm(mean=utility, st_dev=utility / 4)
+                fit_output = RVGs.Beta.fit_mm(mean=utility, st_dev=utility / 5)
                 # append the distribution
                 self.annualStateUtilityRVG.append(
                     RVGs.Beta(a=fit_output["a"], b=fit_output["b"]))

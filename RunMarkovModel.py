@@ -5,16 +5,14 @@ import Support as Support
 import SimPy.Plots.Histogram as Hist
 import SimPy.Plots.SamplePaths as Path
 
-# selected therapy
-therapy = P.Therapies.WITHOUT
 
-# create a cohort
 myCohort = Cls.Cohort(id=1,
-                      pop_size=D.POP_SIZE,
-                      parameters=P.Parameters(therapy=therapy))
+                                  pop_size=D.POP_SIZE,
+                                  parameters=P.Parameters(therapy=P.Therapies.WITHOUT))
 
-# simulate the cohort over the specified time steps
+# simulate
 myCohort.simulate(sim_length=D.SIMULATION_LENGTH)
+
 
 # plot the sample path (survival curve)
 Path.plot_sample_path(
@@ -45,6 +43,14 @@ Hist.plot_histogram(
 # print the outcomes of this simulated cohort
 Support.print_outcomes(sim_outcomes=myCohort.cohortOutcomes,
                        therapy_name=therapy)
+
+print('Without Vaccine:')
+print('     Mean survival time for the model (years):',
+      myCohort.cohortOutcomes.meanSurvivalTime)
+print('     Mean number of COVID:',
+      myCohort.cohortOutcomes.meanNumOfCOVID)
+print('Average discounted cost of patients who start in the state “Well” with vaccine:',
+      myCohort.cohortOutcomes.meanCosts)
 
 
 # -----------------------------
