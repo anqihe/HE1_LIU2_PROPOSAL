@@ -4,7 +4,7 @@ import numpy as np
 
 # simulation settings
 POP_SIZE = 1000        # cohort population size 10000
-SIMULATION_LENGTH = 50   # length of simulation (years) 100
+SIMULATION_LENGTH = 50   # length of simulation (years) 50
 ALPHA = 0.05        # significance level for calculating confidence intervals
 DISCOUNT = 0.03     # annual discount rate
 
@@ -101,13 +101,13 @@ def get_trans_rate_matrix(with_treatment):
 
     return rate_matrix
 
-
-print('Transition rate matrix without vaccine:')
-print(get_trans_rate_matrix(with_treatment=False))
-print('Transition rate matrix with vaccine:')
-print(get_trans_rate_matrix(with_treatment=True))
-
-
+#
+# print('Transition rate matrix without vaccine:')
+# print(get_trans_rate_matrix(with_treatment=False))
+# print('Transition rate matrix with vaccine:')
+# print(get_trans_rate_matrix(with_treatment=True))
+#
+#
 
 
 
