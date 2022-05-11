@@ -5,7 +5,7 @@ import ProbilisticParamClasses as P
 import SimPy.Plots.Histogram as Hist
 import SimPy.Plots.SamplePaths as Path
 
-N_COHORTS = 200              # number of cohorts
+N_COHORTS = 20             # number of cohorts
 
 
 #WITHOUT VACCINE
