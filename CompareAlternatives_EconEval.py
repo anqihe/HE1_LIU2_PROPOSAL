@@ -3,8 +3,8 @@ import MultiCohortClasses as Cls
 import MultiCohortSupport as Support
 import ProbilisticParamClasses as P
 
-N_COHORTS = 200  # number of cohorts
-POP_SIZE = 100 # population size of each cohort
+N_COHORTS = 20  # number of cohorts
+POP_SIZE = 300 # population size of each cohort
 
 # create a multi-cohort to simulate under mono therapy
 multiCohortWITHOUT = Cls.MultiCohort(

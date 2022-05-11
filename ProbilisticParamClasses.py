@@ -1,6 +1,7 @@
 import math
 
 import scipy.stats as stat
+import InputData as Data
 
 import SimPy.RandomVariateGenerators as RVGs
 from ParameterClasses import *  # import everything from the ParameterClass module
@@ -34,25 +35,34 @@ class ParameterGenerator:
 
         # create Dirichlet distributions for transition probabilities
         j = 0
-        for probs in Data.rate_matrix:
+        for probs in Data.get_trans_rate_matrix(with_treatment=True):
             # note:  for a Dirichlet distribution all values of the argument 'a' should be non-zero.
             # setting if_ignore_0s to True allows the Dirichlet distribution to take 'a' with zero values.
             self.probMatrixRVG.append(RVGs.Dirichlet(
                 a=probs, if_ignore_0s=True))
             j += 1
 
-        # treatment relative risk
-        rr_ci = [0.365, 0.71]   # confidence interval of the treatment relative risk
+        # create Dirichlet distributions for transition probabilities
+        j = 0
+        for probs in Data.get_trans_rate_matrix(with_treatment=False):
+            # note:  for a Dirichlet distribution all values of the argument 'a' should be non-zero.
+            # setting if_ignore_0s to True allows the Dirichlet distribution to take 'a' with zero values.
+            self.probMatrixRVG.append(RVGs.Dirichlet(
+                a=probs, if_ignore_0s=True))
+            j += 1
 
-        # find the mean and st_dev of the normal distribution assumed for ln(RR)
-        # sample mean ln(RR)
-        mean_ln_rr = math.log(Data.TREATMENT_RR)
-        # sample standard deviation of ln(RR)
-        std_ln_rr = \
-            (math.log(rr_ci[1]) - math.log(rr_ci[0])) / (2 * stat.norm.ppf(1 - 0.05 / 2))
-        # create a normal distribution for ln(RR)
-        self.lnRelativeRiskRVG = RVGs.Normal(loc=mean_ln_rr,
-                                             scale=std_ln_rr)
+        # # treatment relative risk
+        # rr_ci = [0.365, 0.71]   # confidence interval of the treatment relative risk
+        #
+        # # find the mean and st_dev of the normal distribution assumed for ln(RR)
+        # # sample mean ln(RR)
+        # mean_ln_rr = math.log(Data.TREATMENT_RR)
+        # # sample standard deviation of ln(RR)
+        # std_ln_rr = \
+        #     (math.log(rr_ci[1]) - math.log(rr_ci[0])) / (2 * stat.norm.ppf(1 - 0.05 / 2))
+        # # create a normal distribution for ln(RR)
+        # self.lnRelativeRiskRVG = RVGs.Normal(loc=mean_ln_rr,
+        #                                      scale=std_ln_rr)
 
         # create gamma distributions for annual state cost
         for cost in Data.ANNUAL_STATE_COST:
@@ -106,29 +116,27 @@ class ParameterGenerator:
         # create a parameter set
         param = Parameters(therapy=self.therapy)
 
-        # # calculate transition probabilities
-        # prob_matrix = []    # probability matrix without background mortality added
-        # # for all health states
-        # for s in HealthStates:
-        #     # if the current state is not death
-        #     if s not in [HealthStates.COVID_DEATH, HealthStates.NATUAL_DEATH]:
-        #         # sample from the dirichlet distribution to find the transition probabilities between hiv states
-        #         # fill in the transition probabilities out of this state
-        #         prob_matrix.append(self.probMatrixRVG[s.value].sample(rng))
-        #
+        # calculate transition probabilities
+        prob_matrix = []    # probability matrix without background mortality added
+        # for all health states
+        for s in HealthStates:
+            # if the current state is not death
+            if s not in [HealthStates.COVID_DEATH, HealthStates.NATUAL_DEATH]:
+                # sample from the dirichlet distribution to find the transition probabilities between hiv states
+                # fill in the transition probabilities out of this state
+                prob_matrix.append(self.probMatrixRVG[s.value].sample(rng))
+
         # # sampled relative risk
         # rr = math.exp(self.lnRelativeRiskRVG.sample(rng))
         #
-        # # calculate transition probabilities between hiv states
-        # if self.therapy == Therapies.MONO:
-        #     # calculate transition probability matrix for the mono therapy
-        #     param.transRateMatrix = get_trans_rate_matrix(trans_prob_matrix=prob_matrix)
-        #
-        # elif self.therapy == Therapies.COMBO:
-        #     # calculate transition probability matrix for the combination therapy
-        #     param.transRateMatrix = get_trans_rate_matrix_combo(
-        #         rate_matrix_mono=get_trans_rate_matrix(trans_prob_matrix=prob_matrix),
-        #         combo_rr=rr)
+        # calculate transition probabilities between hiv states
+        if self.therapy == Therapies.WITHOUT:
+            # calculate transition probability matrix for the mono therapy
+            param.transRateMatrix = Data.get_trans_rate_matrix(with_treatment=False)
+
+        elif self.therapy == Therapies.WITH:
+            # calculate transition probability matrix for the combination therapy
+            param.transRateMatrix = Data.get_trans_rate_matrix(with_treatment=True)
 
         # sample from gamma distributions that are assumed for annual state costs
         for dist in self.annualStateCostRVG:
