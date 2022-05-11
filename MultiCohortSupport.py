@@ -189,7 +189,7 @@ def report_CEA_CBA(multi_cohort_outcomes_without, multi_cohort_outcomes_with):
     # CBA
     NBA = Econ.CBA(
         strategies=[without_therapy_strategy, with_therapy_strategy],
-        wtp_range=[-20000, 50000],
+        wtp_range=[-10000, 10000],
         if_paired=True
         # wtp_range=[0, 50000],
         # if_paired=False
