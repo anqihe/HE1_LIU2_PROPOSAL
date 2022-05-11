@@ -37,4 +37,4 @@ Support.print_comparative_outcomes(sim_outcomes_without=cohort_mono.cohortOutcom
 Support.report_CEA_CBA(sim_outcomes_without=cohort_mono.cohortOutcomes,
                        sim_outcomes_with=cohort_combo.cohortOutcomes)
 
-print('At level of willingness-to-pay = 201$, we will recommend taking the vaccine.')
+print('At level of willingness-to-pay = $225.94, we will recommend taking the vaccine.')

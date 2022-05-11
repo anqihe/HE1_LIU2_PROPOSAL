@@ -90,7 +90,7 @@ Hist.plot_histogram(
 
 
 # print the outcomes of this simulated cohort
-Support.print_outcomes(sim_outcomes=myCohort.cohortOutcomes,
+Support.print_outcomes(sim_outcomes=myCohortWith.cohortOutcomes,
                        therapy_name=P.Therapies.WITH)
 
 

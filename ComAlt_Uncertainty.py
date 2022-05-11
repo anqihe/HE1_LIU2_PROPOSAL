@@ -41,3 +41,4 @@ Support.print_comparative_outcomes(multi_cohort_outcomes_without=multiCohortWITH
 # report the CEA results
 Support.report_CEA_CBA(multi_cohort_outcomes_without=multiCohortWITHOUT.multiCohortOutcomes,
                        multi_cohort_outcomes_with=multiCohortWITH.multiCohortOutcomes)
+

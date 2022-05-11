@@ -1,5 +1,4 @@
 import math
-
 import scipy.stats as stat
 import InputData as Data
 
