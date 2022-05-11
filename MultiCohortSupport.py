@@ -84,7 +84,7 @@ def plot_survival_curves_and_histograms(multi_cohort_outcomes_without, multi_coh
         x_label='Survival Time (year)',
         y_label='Counts',
         bin_width=0.25,
-        x_range=[5.25, 17.75],
+        #x_range=[18, 28],
         legends=['Without Vaccine', 'With Vaccine'],
         color_codes=['green', 'blue'],
         transparency=0.5
@@ -189,9 +189,9 @@ def report_CEA_CBA(multi_cohort_outcomes_without, multi_cohort_outcomes_with):
     # CBA
     NBA = Econ.CBA(
         strategies=[without_therapy_strategy, with_therapy_strategy],
-        wtp_range=(0, 50000),
+        wtp_range=[-20000, 50000],
         if_paired=True
-        # wtp_range=[0, 1000],
+        # wtp_range=[0, 50000],
         # if_paired=False
     )
     # show the net monetary benefit figure
